@@ -12,7 +12,9 @@ PURPLE="\033[35m"
 AQUA="\033[36m"
 RESET_COLOR="\033[0m"
 
+#
 ### utils
+#
 
 # assert - returns 1 if assertion fails
 # Usage: assert <shell test expression>
@@ -43,7 +45,10 @@ echoc() {
     echo "$@$RESET_COLOR"
 }
 
+#
 ### test flow
+#
+
 # register actions here
 
 init() {
@@ -51,6 +56,7 @@ init() {
     # do something before testing
     # eg. start server, start workers
     echo
+    return 0
 }
 
 run_cases() {
@@ -66,17 +72,26 @@ cleanup() {
     echo
 }
 
+#
 ### test cases
+#
+
 # write your test cases here
+
+MY_CONSTANT=1919810
 
 demo_case() {
     echo "This is a demo case"
-    assert "[ 514 -eq 514 ] && [ 'abc' = 'abc' ]" || cleanup
+    assert "[ 514 -eq 514 ] && [ 'abc' = 'abc' ]" || return 1
+    assert [ "$MY_CONSTANT" -eq 1919810 ] || return 1
     assert "[ 514 -ne 514 ] && [ 'abc' = 'abc' ]"
 }
 
+#
 ### entrypoints
+#
 
 init
+[ $? -ne 0 ] && echoc RED "error: init failed" && cleanup && exit
 run_cases
 cleanup
