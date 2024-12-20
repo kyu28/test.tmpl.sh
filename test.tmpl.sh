@@ -91,7 +91,14 @@ demo_case() {
 ### entrypoints
 #
 
-init
-[ $? -ne 0 ] && echoc RED "error: init failed" && cleanup && exit
-run_cases
-cleanup
+main() {
+    # trap SIGINT, make sure cleaning up
+    trap "cleanup && exit" 2
+    init
+    [ $? -ne 0 ] && echoc RED "error: init failed" && cleanup && exit
+    run_cases
+    cleanup
+}
+
+# run in subshell
+(main "$@")
